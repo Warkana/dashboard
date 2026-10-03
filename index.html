@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Мій дашборд справ</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div id="app">
+
+    <!-- ===== Екран логіну (magic link) ===== -->
+    <section id="login-screen" class="login-screen" hidden>
+      <div class="brand">🗂️ Мій дашборд</div>
+      <p class="subtitle">Читання · Ігри · Пет-проєкти · Навчання</p>
+      <form id="login-form" class="login-form">
+        <label for="login-email">Email</label>
+        <input id="login-email" name="email" type="email" required placeholder="you@example.com" autocomplete="email" />
+        <button type="submit" class="btn btn-primary">Надіслати magic link</button>
+      </form>
+      <p id="login-status" class="login-status"></p>
+    </section>
+
+    <!-- ===== Дашборд ===== -->
+    <div id="dashboard" hidden>
+      <header class="app-header">
+        <h1>🗂️ Мій дашборд</h1>
+        <div class="header-actions">
+          <button id="add-task-btn" class="btn btn-primary">+ Додати справу</button>
+          <button id="theme-toggle" class="btn btn-icon" title="Тема">🌓</button>
+          <button id="logout-btn" class="btn btn-ghost">Вийти</button>
+        </div>
+      </header>
+
+      <section id="stats-row" class="stats-row"></section>
+
+      <div class="filters-row">
+        <nav id="category-filters" class="category-filters"></nav>
+        <label class="sort-control">Сортування
+          <select id="sort-select"></select>
+        </label>
+      </div>
+
+      <main>
+        <section class="section">
+          <div class="section-header">
+            <h2>Активні справи <span class="count-pill" id="active-count">0</span></h2>
+          </div>
+          <div id="active-list" class="card-grid"></div>
+          <p id="active-empty" class="empty-state" hidden>Немає активних справ. Почніть щось із беклогу 👇</p>
+        </section>
+
+        <section class="section">
+          <div class="section-header">
+            <h2>Беклог <span class="count-pill" id="backlog-count">0</span></h2>
+            <div class="backlog-toolbar">
+              <input id="backlog-search" type="search" placeholder="Пошук у беклозі…" />
+            </div>
+          </div>
+          <table class="backlog-table">
+            <thead>
+              <tr>
+                <th>Назва</th>
+                <th>Категорія</th>
+                <th>Дедлайн</th>
+                <th>Пріоритет</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="backlog-rows"></tbody>
+          </table>
+          <p id="backlog-empty" class="empty-state" hidden>Беклог порожній.</p>
+        </section>
+
+        <details class="section" id="done-section">
+          <summary>Виконано <span class="count-pill" id="done-count">0</span></summary>
+          <ul id="done-list"></ul>
+        </details>
+      </main>
+    </div>
+  </div>
+
+  <!-- ===== Модалка додавання/редагування ===== -->
+  <dialog id="task-modal">
+    <form id="task-form">
+      <h3 id="modal-title">Нова справа</h3>
+      <input type="hidden" name="id" />
+
+      <div class="field">
+        <label for="field-title">Назва</label>
+        <input id="field-title" name="title" type="text" required maxlength="200" placeholder="Напр.: Прочитати «Дюну»" />
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="field-category">Категорія</label>
+          <select id="field-category" name="category">
+            <option value="reading">Читання</option>
+            <option value="games">Ігри</option>
+            <option value="pet_projects">Пет-проєкти</option>
+            <option value="learning">Навчання</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="field-status">Статус</label>
+          <select id="field-status" name="status">
+            <option value="backlog">Беклог</option>
+            <option value="active">Активна</option>
+            <option value="done">Виконано</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="field-progress">Прогрес (%)</label>
+        <input id="field-progress" name="progress" type="range" min="0" max="100" step="5" value="0" />
+      </div>
+
+      <div class="field">
+        <label for="field-notes">Нотатки</label>
+        <textarea id="field-notes" name="notes" maxlength="500" placeholder="Деталі, посилання, думки…"></textarea>
+      </div>
+
+      <div class="field">
+        <label for="field-image">Посилання на зображення (обкладинка, опційно)</label>
+        <input id="field-image" name="image_url" type="url" placeholder="https://…/cover.jpg" />
+      </div>
+
+      <div class="field">
+        <label for="field-link">Посилання при кліку (Goodreads, Notion…, опційно)</label>
+        <input id="field-link" name="link_url" type="url" placeholder="https://…" />
+      </div>
+
+      <div class="field">
+        <label for="field-due">Дедлайн (опційно)</label>
+        <input id="field-due" name="due_date" type="date" />
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" id="delete-task-btn" class="btn btn-ghost btn-danger" hidden>Видалити</button>
+        <div class="right">
+          <button type="button" id="modal-cancel-btn" class="btn btn-ghost">Скасувати</button>
+          <button type="submit" class="btn btn-primary">Зберегти</button>
+        </div>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="toast-container"></div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
